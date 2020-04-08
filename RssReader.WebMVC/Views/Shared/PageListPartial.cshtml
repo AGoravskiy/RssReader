@@ -1,0 +1,77 @@
+﻿@model RssReader.Services.Models.ViewModels.PagingPostsList
+@using RssReader.Services.Models.ViewModels
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.PostListItems.FirstOrDefault().ChannelTitle)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PostListItems.FirstOrDefault().Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PostListItems.FirstOrDefault().Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PostListItems.FirstOrDefault().pubDate)
+        </th>
+    </tr>
+    @if (Model.PostListItems != null)
+    {
+        foreach (var item in Model.PostListItems)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ChannelTitle)
+                </td>
+                <td>
+                    <a href="@item.Link" target="_blank">@item.Title</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.pubDate)
+                </td>
+            </tr>
+        }
+
+    }
+</table>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                @for (int i = 1; i <= Model.PostView.TotalPages; i++)
+                {
+                    
+                    if (Model.PostView.PageNumber == i)
+                    {
+                        <li class="active">
+                            @Ajax.ActionLink(i.ToString(), "PageListPartial", new PostView
+                            {
+                                ChannelId = Model.PostView.ChannelId,
+                                SortProperty = Model.PostView.SortProperty,
+                                PageNumber = i
+                            },
+                            new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "results" })
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            @Ajax.ActionLink(i.ToString(), "PageListPartial", new PostView
+                            {
+                                ChannelId = Model.PostView.ChannelId,
+                                SortProperty = Model.PostView.SortProperty,
+                                PageNumber = i
+                            },
+                            new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "results" })
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+</nav>
